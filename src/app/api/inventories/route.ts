@@ -1,7 +1,9 @@
 
 import { db } from "@/lib/db/db";
 import { inventorySchema } from "@/lib/validators/inventorySchema";
-import { inveventories } from "@/lib/db/schema";
+import { inveventories, products, warehouses } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+
 
 
 export async function POST(request: Request) {
@@ -30,7 +32,17 @@ export async function POST(request: Request) {
 
 export async function GET(request: Request) {
     try {
-        const data = await db.select().from(inveventories)
+        const data = await db.select(
+            {
+                id: inveventories.id,
+                sku: inveventories.sku,
+                werehouse: warehouses.name,
+                product: products.name,
+
+            }
+        ).from(inveventories)
+            .leftJoin(warehouses, eq(inveventories.warehousesId, warehouses.id))
+            .leftJoin(products, eq(inveventories.productId, products.id))
         return Response.json(data, { status: 200 })
     } catch (error) {
         return Response.json({ message: "Failed to fetch inventory response " }, { status: 500 })
