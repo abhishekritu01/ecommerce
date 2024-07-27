@@ -7,17 +7,19 @@ import {eq} from "drizzle-orm";
 
 export async function POST(request: Request, response: Response) {
     let requestDate = await request.json();
-    console.log(requestDate);
-
     let validateData;
-
     try {
         validateData = await deliverySchema.parse(requestDate);
+
+        if(!validateData){
+            return Response.json({message:'Invalid Data'},{status:400});
+        }
         
     } catch (error) {
         return Response.json({message:error},{status:400});
         
     }
+
 
     try {
         await db.insert(diliveryPersons).values(validateData);
