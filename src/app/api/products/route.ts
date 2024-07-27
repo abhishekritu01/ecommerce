@@ -5,8 +5,11 @@ import path from 'node:path';
 import { db } from "@/lib/db/db";
 import { products } from "@/lib/db/schema";
 import { unlink } from "fs/promises";
+import { desc } from "drizzle-orm";
 
 export async function POST(request:Request , response:Response){
+
+    // todo : check if the user is authenticated
 
     const data = await request.formData();
 
@@ -49,5 +52,17 @@ export async function POST(request:Request , response:Response){
 
     return Response.json({message:'product created'},{status:201});
 
+
+}
+
+
+
+export async function GET(){
+try {
+    const allproduct = await db.select().from(products).orderBy(desc(products.id));
+    return Response.json(allproduct);   
+} catch (error) { 
+    return Response.json({message:'failed to fetch products'},{status:500});
+}
 
 }
