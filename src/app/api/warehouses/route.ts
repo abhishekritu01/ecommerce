@@ -36,3 +36,23 @@ export async function POST(request:Request){
         })  
     }
 }
+
+
+
+export async function GET(request:Request){
+
+    try {
+        const allwarehouses = await db.select().from(warehouses);
+        return Response.json(allwarehouses,{status:200});
+        
+    } catch (error) {
+        return new Response(JSON.stringify({error:"Failed to fetch all werehouse"}),{
+            status:500,
+            headers:{
+                'content-type':'application/json'
+            }
+        })
+        
+    }
+}
+
