@@ -1,6 +1,8 @@
 import { db } from "@/lib/db/db";
 import { deliverySchema } from "@/lib/validators/deliverySchema";
 import { diliveryPersons} from "@/lib/db/schema";
+import { warehouses } from "@/lib/db/schema";
+import {eq} from "drizzle-orm";
 
 
 export async function POST(request: Request, response: Response) {
@@ -11,7 +13,6 @@ export async function POST(request: Request, response: Response) {
 
     try {
         validateData = await deliverySchema.parse(requestDate);
-
         
     } catch (error) {
         return Response.json({message:error},{status:400});
@@ -24,6 +25,24 @@ export async function POST(request: Request, response: Response) {
     } catch (error) {
         return Response.json({message:'failed to store delivery person in database '},{status:500});
     }
+}
+
+
+
+
+export async function GET(request: Request, response: Response) {
+try {
+    let deliveryPersons = await db.select({
+        name:diliveryPersons.name,
+        phone:diliveryPersons.phone,
+        werehouseID:diliveryPersons.werehouseID,
+        werehouseName:warehouses.name,
+        werehousePincode:warehouses.pincode
+    }).from(diliveryPersons)
+    .leftJoin(warehouses ,eq(diliveryPersons.werehouseID,warehouses.id))
+    return Response.json(deliveryPersons);
     
-    
+} catch (error) {
+    return Response.json({message:'failed to fetch delivery persons'},{status:500});
+}
 }
