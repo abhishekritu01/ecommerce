@@ -1,10 +1,10 @@
 
-export default function Home() {
+import React from 'react'
+
+const page = () => {
   return (
- <>
- <h1 className="text-4xl">Welcome to Next.js E-Commerce</h1>  
- 
- 
- </>
-  );
+    <div className='text-7xl text-zinc-900'>page</div>
+  )
 }
+
+export default page
