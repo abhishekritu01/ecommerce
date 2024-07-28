@@ -50,7 +50,7 @@ export const orders = pgTable("orders",{
 })
 
 
-export const diliveryPersons = pgTable("dilivery_persons",{
+export const diliveryPersons = pgTable("dilivery_persons",{  
     id:serial('id').primaryKey(),
     name:varchar('name',{length:100}).notNull(),
     phone:varchar('phone',{length:13}).notNull(),
