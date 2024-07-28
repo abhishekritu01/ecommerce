@@ -19,6 +19,7 @@ const ProductSheet = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['products']})
             alert('Product created')
+            onClose()
         }
     })
 
