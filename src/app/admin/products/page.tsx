@@ -8,12 +8,13 @@ import { useQuery } from '@tanstack/react-query'
 import { Product } from '@/types'
 import ProductSheet from './product-sheet'
 import CreateProductForm from './create-product-form'
-import {useNewProductStore} from '@/store/product/product-store'
+import { useNewProductStore } from '@/store/product/product-store'
+import { Loader2 } from 'lucide-react'
 
 
 const page = () => {
 
-  const {onOpen} = useNewProductStore()
+  const { onOpen } = useNewProductStore()
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ['products'],
@@ -29,10 +30,16 @@ const page = () => {
           size={'sm'} >Add Product</Button>
         <ProductSheet />
       </div>
-      <DataTable
-        columns={columns}
-        data = {products || []}
-      />
+      {
+        isLoading ? (<div className='flex flex-center justify-center'>
+          <Loader2 className="size-10 animate-spin" />
+        </div>) : (<DataTable
+          columns={columns}
+          data={products || []}
+        />)
+
+      }
+
     </>
 
   )
