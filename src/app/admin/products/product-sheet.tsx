@@ -9,11 +9,11 @@ import {useNewProductStore} from '@/store/product/product-store'
 
 const ProductSheet = () => {
 
-    const {onClose,isOpen,open} =useNewProductStore()
+    const {onClose,isOpen} =useNewProductStore()
 
     const queryClient = useQueryClient();
 
-    const {mutate} = useMutation({
+    const {mutate,isPending} = useMutation({
         mutationKey:[ 'create-product'],
         mutationFn: (data: FormData) => CreateProduct(data),
         onSuccess: () => {
@@ -47,7 +47,7 @@ const ProductSheet = () => {
                 <h1>Create product from</h1>
                 <CreateProductForm onSubmit={
                     OnSubmit
-                } disabled={false} />
+                } disabled={isPending} />
             </SheetContent>
         </Sheet>
     )
