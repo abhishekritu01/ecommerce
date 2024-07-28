@@ -16,10 +16,11 @@ const page = () => {
 
   const { onOpen } = useNewProductStore()
 
-  const { data: products, isLoading } = useQuery<Product[]>({
+  const { data: products, isLoading,isError } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: getAllProducts
   })
+
 
   return (
     <>
@@ -30,6 +31,11 @@ const page = () => {
           size={'sm'} >Add Product</Button>
         <ProductSheet />
       </div>
+
+      {
+        isError  && <div className="text-red-500">Error fetching data</div>
+      }
+
       {
         isLoading ? (<div className='flex flex-center justify-center'>
           <Loader2 className="size-10 animate-spin" />
@@ -37,9 +43,7 @@ const page = () => {
           columns={columns}
           data={products || []}
         />)
-
       }
-
     </>
 
   )
