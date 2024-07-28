@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { QueryProvider } from "@/provider/queryProvider";
 // const inter = Inter({ subsets: ["latin"] });
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from "@/components/ui/toaster"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export default function RootLayout({
         <QueryProvider>
           {children}
         </QueryProvider>
-        
+        <Toaster />
       </body>
     </html>
   );
