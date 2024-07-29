@@ -39,7 +39,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const navItems = [
         { lable: 'Dashboard', icon: HomeIcon, href: '/admin' },
         { lable: 'Products', icon: Package2, href: '/admin/products' },
-        { lable: 'Warehouse', icon: HomeIcon, href: '/admin/warehouse' },
+        { lable: 'Warehouse', icon: HomeIcon, href: '/admin/warehouses' },
         { lable: 'Delivery Persons', icon: CircleUser, href: '/admin/delivery-persons' },
         { lable: 'Orders', icon: ShoppingCart, href: '/admin/orders' },
         { lable: 'Inventory', icon: LineChart, href: '/admin/inventory' },
