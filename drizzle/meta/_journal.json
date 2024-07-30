@@ -43,6 +43,13 @@
       "when": 1722089404492,
       "tag": "0005_good_sentinels",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1722344728833,
+      "tag": "0006_breezy_chimera",
+      "breakpoints": true
     }
   ]
 }
