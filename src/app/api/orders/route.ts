@@ -9,6 +9,8 @@ import { orders } from "@/lib/db/schema";
 import { diliveryPersons } from "@/lib/db/schema";
 import crypto from "node:crypto";
 import axios from "axios";
+import {user} from "@/lib/db/schema";
+import { desc } from "drizzle-orm";
 
 
 export async function POST(request: Request) {
@@ -180,7 +182,35 @@ export async function POST(request: Request) {
 
 
 
-
+export async function GET() {
+    // todo: add authentication and authorization
+    // todo: add logging
+    // todo: add error handling
+    const allOrders = await db
+        .select({
+            id: orders.id,
+            product: products.name,
+            productId: products.id,
+            userId: user.id,
+            user: user.fname,
+            type: orders.type,
+            price: orders.price,
+            image: products.image,
+            status: orders.status,
+            address: orders.address,
+            qty: orders.qty,
+            createAt: orders.createdAt,
+        })
+        .from(orders)
+        .leftJoin(products, eq(orders.productId, products.id))
+        .leftJoin(user, eq(orders.userId, user.id))
+        // join inventories (orderId)
+        // join delivery person (orderId)
+        // join warehouse (deliveryId)
+        // todo: 1. use pagination, 2. Put index
+        .orderBy(desc(orders.id));
+    return Response.json(allOrders);
+}
 
 
 
