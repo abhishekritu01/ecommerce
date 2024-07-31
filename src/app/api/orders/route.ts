@@ -7,6 +7,8 @@ import { and, eq, inArray, is, isNull } from "drizzle-orm";
 import { products } from "@/lib/db/schema";
 import { orders } from "@/lib/db/schema";
 import { diliveryPersons } from "@/lib/db/schema";
+import crypto from "node:crypto";
+import axios from "axios";
 
 
 export async function POST(request: Request) {
@@ -56,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     let transactionError: string = "";
-    let finalOrder:any = null;
+    let finalOrder: any = null;
 
     //start transaction
     try {
@@ -67,7 +69,7 @@ export async function POST(request: Request) {
                 ...validateData,
 
                 //@ts-ignore
-                userId: session.token.id,
+                userId:Number(session.token.id),
                 price: foundProducts[0].price * validateData.qty,
                 // todo move all status to enum
                 status: "received",
@@ -105,7 +107,6 @@ export async function POST(request: Request) {
 
             // stock is available and delivery person is available
             //update inventory table  add order id 
-
             await tx.update(inveventories).set({
                 orderId: order[0].id
             }).where(
@@ -136,18 +137,50 @@ export async function POST(request: Request) {
 
 
     //payment gateway logic
-    
     //1 create invoice
+    const paymentUrl = "https://api.cryptomus.com/v1/payment";
+
+    const paymentData = {
+        amount: String(finalOrder.price),
+        currency: "USD",
+        orderId: String(finalOrder.id),
+        url_return: "https://localhost:3000/payment/return",
+        url_success: "https://localhost:3000/payment/success",
+        url_callback: "https://34f2-2405-201-a413-d93c-98d8-76f6-916c-e67b.ngrok-free.app/api/payment/callback",
+    }
+
+
+    const stringData = btoa(JSON.stringify(paymentData)) + process.env.CRYPTOMUS_API_KEY;
+    const sign = crypto.createHash('md5').update(stringData).digest('hex');
+
+
+    const headers = {
+        merchant: process.env.CRYPTOMUS_MERCHANT_ID,
+        sign,
+    };
+
+    try {
+        const response = await axios.post(paymentUrl, paymentData, {
+            headers,
+        });
+        console.log('response', response.data);
+
+        return Response.json({ paymentUrl: response.data.result.url });
+    } catch (err) {
+        console.log('error while creating an invoice', err);
+        // todo: 1. retry if not then we have undo the order.
     
-
-
-
-
-
-
-
-
-
-
-
+        return Response.json({
+            message: 'Failed to create an invoice',
+        });
+    }
 }
+
+
+
+
+
+
+
+
+
